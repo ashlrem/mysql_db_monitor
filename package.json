@@ -1,0 +1,20 @@
+{
+  "name": "ostfacerecognitionmonitoring",
+  "version": "1.0.0",
+  "description": "OST Face Recognition Monitoring System",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joven Maningas",
+  "license": "ISC",
+  "dependencies": {
+    "@rodrigogs/mysql-events": "^0.6.0",
+    "express": "^4.17.1",
+    "mysql": "^2.18.1",
+    "node-hikvision-api": "0.0.2",
+    "ora": "^4.0.5",
+    "xml2js": "^0.4.23"
+  }
+}
