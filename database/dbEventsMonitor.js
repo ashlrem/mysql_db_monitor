@@ -1,16 +1,21 @@
 const mysql = require('mysql');
 const MySQLEvents = require('@rodrigogs/mysql-events');
 const ora = require('ora'); // cool spinner
+
 const spinner = ora({
-  text: '🛸 Waiting for database events... 🛸',
+  text: '🛸 Waiting for database events... 🛸 \n',
   color: 'blue',
   spinner: 'dots2'
 });
 
+const cypress = require('../utils/cypressRun');
+
+var person = require('../person')
+
 const program = async () => {
   const connection = mysql.createConnection({
     host: 'localhost',
-    user: 'camer_user',
+    user: 'camera_user',
     password: 'admin123'
   });
 
@@ -21,16 +26,32 @@ const program = async () => {
   await instance.start();
 
   instance.addTrigger({
-    name: 'monitoring all statments',
-    expression: 'hikvision.*', // listen to hikvision database !!!
+    name: 'monitoring insert statments',
+    expression: 'ost_hikvision_db.*', // listen to hikvision database !!!
     // statement: MySQLEvents.STATEMENTS.ALL, // you can choose only insert for example MySQLEvents.STATEMENTS.INSERT, but here we are choosing everything
     statement: MySQLEvents.STATEMENTS.INSERT, // you can choose only insert for example MySQLEvents.STATEMENTS.INSERT, but here we are choosing everything
     onEvent: e => {
-    //   console.log(e);
-    //   console.log("EVENT TYPE: " + e.type + " \n" + "OBJECT: " + JSON.stringify(e.affectedRows[0].after))
-      console.log("Mobile Number: " + JSON.stringify(e.affectedRows[0].after.mobile_no) + "\n" + "NRIC/FIN: " + JSON.stringify(e.affectedRows[0].after.name_nric_fin) + "\n")
-      spinner.succeed('_EVENT_');
-      spinner.start();
+      try{
+        var idNo = e.affectedRows[0].after.name_nric_fin.split(",");
+        var d = new Date();
+
+        person.setNricFin(idNo[1])
+        person.setMobileNumber(e.affectedRows[0].after.mobile_no)
+  
+        var nric = person.getNricFin();
+        var mobno = person.getMobileNumber();
+
+        console.log("\n==============================\n");
+        console.log("Person Info: " + nric + " : " + mobno)
+        console.log("Date and Time: " + d)
+  
+        cypress.run();
+  
+        spinner.succeed(`__SAFE_ENTRY_SUCCEEDED_FOR_${person.getNricFin()}_${new Date()}__`);
+        spinner.start();
+      }catch(e){
+        console.log(e)
+      }
     }
   });
 
