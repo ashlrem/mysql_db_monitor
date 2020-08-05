@@ -15,7 +15,8 @@ describe('SafeEntry Check-in Input', () => {
       cy.get('#mat-input-0').click();
       cy.get('#mat-input-0').type(Cypress.env('mobileNum'));
       
-      //cy.get('.mat-button-wrapper').click();
+      // cy.get('.pin-button').click();
+      cy.wait(1000)
       cy.screenshot(Cypress.env('nricFin') + '_' + Cypress.env('mobileNum') + '_' + d);
     })
 })

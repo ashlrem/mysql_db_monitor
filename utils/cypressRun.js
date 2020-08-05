@@ -11,7 +11,8 @@ var run = async function() {
         baseUrl: 'https://www.safeentry-qr.gov.sg/tenant/PROD-200504143Z-685828-ONESYSTEMSTECHNOLOGIESPTELT-SE',
         video: false,
         pluginsFile: './cypress/plugins/index.js',
-        screenshotsFolder: './reports'
+        screenshotsFolder: './reports',
+        trashAssetsBeforeRuns: false
       },
       env: {
         nricFin: person.getNricFin(),
@@ -26,7 +27,7 @@ var run = async function() {
         console.log("CYPRESS RUN: ERROR FOR: " + person.getNricFin() + " on " + d)
       })
 }
-
+ 
 module.exports = {
     run
 };
