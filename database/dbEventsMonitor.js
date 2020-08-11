@@ -14,7 +14,7 @@ var person = require('../person')
 
 const program = async () => {
   const connection = mysql.createConnection({
-    host: 'localhost',
+    host: '192.168.64.3',
     user: 'camera_user',
     password: 'admin123'
   });
@@ -31,30 +31,39 @@ const program = async () => {
     // statement: MySQLEvents.STATEMENTS.ALL, // you can choose only insert for example MySQLEvents.STATEMENTS.INSERT, but here we are choosing everything
     statement: MySQLEvents.STATEMENTS.INSERT, // you can choose only insert for example MySQLEvents.STATEMENTS.INSERT, but here we are choosing everything
     onEvent: e => {
-      try{
-        var idNo = e.affectedRows[0].after.name_nric_fin.split(",");
-        var d = new Date();
+      var idNo = e.affectedRows[0].after.name_nric_fin.split(",");
+      var d = new Date();
+      var dateFormat =   d.getFullYear() +  '-' + ((d.getMonth() > 8) ? (d.getMonth() + 1) : ('0' + (d.getMonth() + 1))) + '-' + ((d.getDate() > 9) ? d.getDate() : ('0' + d.getDate()));
+      var timeForamt = d.getHours() + ':' + d.getMinutes() + ':' + d.getSeconds();
 
-        person.setNricFin(idNo[1])
-        person.setMobileNumber(e.affectedRows[0].after.mobile_no)
-  
-        var nric = person.getNricFin();
-        var mobno = person.getMobileNumber();
+      person.setNricFin(idNo[1])
+      person.setMobileNumber(e.affectedRows[0].after.mobile_no)
+      var nric = person.getNricFin();
+      var mobno = person.getMobileNumber();
 
-        console.log("\n==============================\n");
-        console.log("Person Info: " + nric + " : " + mobno)
-        console.log("Date and Time: " + d)
-  
-        cypress.run();
-  
-        spinner.succeed(`__SAFE_ENTRY_SUCCEEDED_FOR_${person.getNricFin()}_${new Date()}__`);
-        spinner.start();
-      }catch(e){
-        console.log(e)
-      }
+      var sql = mysql.format("SELECT * from ost_hikvision_db.attendance_tbl where mobile_no= ? && auth_date= ? && auth_time > ? ORDER BY auth_time DESC", [mobno, dateFormat, timeForamt]);
+      connection.query(sql,  function (error, results, fields) {
+      if (error) throw error;
+      console.log(results)
+       if(results[0]){
+         try{
+             console.log("\n==============================\n");
+             console.log("Person Info: " + nric + " : " + mobno)
+             console.log("Date and Time: " + d)
+             cypress.run();
+             spinner.succeed(`__SAFE_ENTRY_SUCCEEDED_FOR_${person.getNricFin()}_${new Date()}__`);
+             spinner.start();
+         }catch(e){
+           console.log(e)
+         }
+
+       }else{
+         console.log("Not Equal Expression")
+       }
+      });
+
     }
   });
-
   instance.on(MySQLEvents.EVENTS.CONNECTION_ERROR, console.error);
   instance.on(MySQLEvents.EVENTS.ZONGJI_ERROR, console.error);
 };

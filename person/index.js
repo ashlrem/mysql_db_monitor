@@ -1,4 +1,4 @@
-var nricFin, mobileNumber;
+var nricFin, mobileNumber, authDate;
 
 exports.setNricFin = function (idNo) {
     nricFin = idNo;
@@ -10,6 +10,10 @@ exports.setMobileNumber = function (mobileNo) {
 
 exports.getNricFin = function () {
     return nricFin;
+};
+
+exports.getauthDate = function(){
+  return authDate;
 };
 
 exports.getMobileNumber = function () {
