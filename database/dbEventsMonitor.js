@@ -14,7 +14,7 @@ var person = require('../person')
 
 const program = async () => {
   const connection = mysql.createConnection({
-    host: '192.168.64.3',
+    host: '127.0.0.1',
     user: 'camera_user',
     password: 'admin123'
   });
@@ -41,25 +41,26 @@ const program = async () => {
       var nric = person.getNricFin();
       var mobno = person.getMobileNumber();
 
-      var sql = mysql.format("SELECT * from ost_hikvision_db.attendance_tbl where mobile_no= ? && auth_date= ? && auth_time > ? ORDER BY auth_time DESC", [mobno, dateFormat, timeForamt]);
+      var sql = mysql.format("SELECT * from ost_hikvision_db.attendance_tbl where mobile_no= ? && auth_date= ? && auth_time < ? ORDER BY auth_time DESC", [mobno, dateFormat, timeForamt]);
       connection.query(sql,  function (error, results, fields) {
       if (error) throw error;
-      console.log(results)
-       if(results[0]){
-         try{
-             console.log("\n==============================\n");
-             console.log("Person Info: " + nric + " : " + mobno)
-             console.log("Date and Time: " + d)
-             cypress.run();
-             spinner.succeed(`__SAFE_ENTRY_SUCCEEDED_FOR_${person.getNricFin()}_${new Date()}__`);
-             spinner.start();
-         }catch(e){
-           console.log(e)
-         }
-
-       }else{
-         console.log("Not Equal Expression")
+    
+        console.log(JSON.stringify(results[0].auth_time) + "====" + JSON.stringify(results[1].auth_time))
+      if(JSON.stringify(results[0].auth_time.split(':')[1]) >  JSON.stringify(results[1].auth_time.split(':')[1])){
+               try{
+              cypress.run();
+              console.log("\n==============================\n");
+              console.log("Person Info: " + nric + " : " + mobno)
+              console.log("Date and Time: " + d)
+             
+              spinner.succeed(`__SAFE_ENTRY_SUCCEEDED_FOR_${person.getNricFin()}_${new Date()}__`);
+              spinner.start();
+          }catch(e){
+            console.log(e)
        }
+      }else{
+        console.log("NO")
+      }
       });
 
     }

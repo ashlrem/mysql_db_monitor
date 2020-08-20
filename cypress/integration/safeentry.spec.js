@@ -3,6 +3,7 @@ var d = new Date();
 describe('SafeEntry Check-in Input', () => {
     it('Click Check-In, Type NRIC/FIN and Mobile Number on fields, Submit', () => {
 
+      // cy.visit('https://www.safeentry-qr.gov.sg/tenant/PROD-200504143Z-685828-ONESYSTEMSTECHNOLOGIESPTELT-SE')
       cy.visit('https://www.safeentry-qr.gov.sg/tenant/PROD-200504143Z-685828-ONESYSTEMSTECHNOLOGIESPTELT-SE')
       cy.get('div[class="safeentry-check-btn checkin-btn"]').click()
       cy.wait(500)
@@ -15,7 +16,7 @@ describe('SafeEntry Check-in Input', () => {
       cy.get('#mat-input-0').click();
       cy.get('#mat-input-0').type(Cypress.env('mobileNum'));
       
-      // cy.get('.pin-button').click();
+      cy.get('.pin-button').click();
       cy.wait(1000)
       cy.screenshot(Cypress.env('nricFin') + '_' + Cypress.env('mobileNum') + '_' + d);
     })
