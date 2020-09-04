@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-const databaseEventsMonitor = require('./database/dbEventsMonitor');
+// const databaseEventsMonitor = require('./database/dbEventsMonitor');
+const psqlEventsMonitor = require('./database/psqlEventsMon');
+// const pgEvents = require('./database/pgEventsMonit');
 // const hikvision = require('./openAPI');
 
 app.get('/', (req, res) => {
