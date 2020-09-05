@@ -1,5 +1,9 @@
 var axios = require('axios');
+var person = require('../person');
+const cypress = require('../utils/cypressRun');
+require('dotenv').config()
 
+const  separator = "_";
 var data = '{\n\n    "pageNo": 1,\n    "pageSize": 500\n}';
 
 var config = {
@@ -14,12 +18,25 @@ var config = {
     data : data
   };
 
-function getPersonInfo(personCode) {
+async function getPersonInfo(personCode, deviceName) {
     axios(config)
     .then(function (response) {
-      console.log("getPersonInfo: " + personCode)
-      var person = response.data.data.list.find(o => o.personCode === personCode);
-      console.log("PSQL EVENTS MONIT: " + JSON.stringify(person))
+      var personData = response.data.data.list.find(o => o.personCode === personCode);
+      var direction = deviceName.split(separator)
+
+      person.setNricFin(personData.personCode)
+      person.setMobileNumber(personData.phoneNo)
+      // console.log("PSQL EVENTS MONIT: " + JSON.stringify(person))
+      try{
+        if(direction[0] === process.env.DIRECTION_ENTRANCE){
+          cypress.runCheckIn();
+        } else if(direction[0] === process.env.DIRECTION_EXIT){
+          cypress.runCheckOut();
+        }
+      }catch(e){
+        console.log(e)
+      }
+      
     })
     .catch(function (error) {
       console.log(error);
