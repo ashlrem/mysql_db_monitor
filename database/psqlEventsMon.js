@@ -1,7 +1,9 @@
 var pg = require ('pg');
 var EventEmitter = require('events');
 var util = require('util');
-require('dotenv').config()
+require('dotenv').config();
+
+EventEmitter.setMaxListeners = 0;
 
 var personList = require('../openapi/getPersonList');
 
@@ -15,6 +17,8 @@ var dbEventEmitter = new DbEventEmitter;
 
 dbEventEmitter.on('new_insert', (msg) => {
     // console.log(msg;)
+    console.log("\n New Door Access Detected.. Submitting Person Information to Safe Entry.. \n")
+    console.log(" Person Name: " + msg.person_name + "\n " + "Device Name: " + msg.device_name)
     personList.getPersonInfo(msg.employee_id, msg.device_name)
 
   });

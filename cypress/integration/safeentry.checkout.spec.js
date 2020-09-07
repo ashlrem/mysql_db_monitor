@@ -4,7 +4,7 @@ describe('SafeEntry Check-Out Input', () => {
     it('Click Check-Out, Type NRIC/FIN and Mobile Number on fields, Submit', () => {
 
     cy.visit('https://www.safeentry-qr.gov.sg/tenant/PROD-200504143Z-685828-ONESYSTEMSTECHNOLOGIESPTELT-SE')
-    cy.wait(500)
+    cy.wait(1000)
     cy.get(':nth-child(2) > .safeentry-check-btn').click()
 
     // Type on NRIC/FIN Field
@@ -20,7 +20,7 @@ describe('SafeEntry Check-Out Input', () => {
     // Click checkout button!
     cy.get('.mat-button-wrapper').click();
 
-    cy.wait(1000)
+    cy.wait(1500)
     cy.screenshot(Cypress.env('nricFin') + '_' + Cypress.env('mobileNum') + '_' + d);
     })
 })

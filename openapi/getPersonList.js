@@ -18,25 +18,25 @@ var config = {
     data : data
   };
 
-async function getPersonInfo(personCode, deviceName) {
+function getPersonInfo(personCode, deviceName) {
     axios(config)
     .then(function (response) {
       var personData = response.data.data.list.find(o => o.personCode === personCode);
       var direction = deviceName.split(separator)
+      var cypressResponse = "";
 
       person.setNricFin(personData.personCode)
       person.setMobileNumber(personData.phoneNo)
       // console.log("PSQL EVENTS MONIT: " + JSON.stringify(person))
-      try{
-        if(direction[0] === process.env.DIRECTION_ENTRANCE){
-          cypress.runCheckIn();
-        } else if(direction[0] === process.env.DIRECTION_EXIT){
-          cypress.runCheckOut();
+        try{
+          if(direction[0] === process.env.DIRECTION_ENTRANCE){
+            cypressResponse = cypress.runCheckIn();
+          } else if(direction[0] === process.env.DIRECTION_EXIT){
+            cypressResponse = cypress.runCheckOut();
+          }
+        }catch(e){
+          console.log(e)
         }
-      }catch(e){
-        console.log(e)
-      }
-      
     })
     .catch(function (error) {
       console.log(error);
