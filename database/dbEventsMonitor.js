@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const MySQLEvents = require('@rodrigogs/mysql-events');
 const ora = require('ora'); // cool spinner
+require('dotenv').config();
 
 const spinner = ora({
   text: '🛸 Waiting for database events... 🛸 \n',
@@ -27,7 +28,7 @@ const program = async () => {
 
   instance.addTrigger({
     name: 'monitoring insert statments',
-    expression: 'ost_hikvision_db.*', // listen to hikvision database !!!
+    expression: 'hcp_safeentry.*', // listen to hikvision database !!!
     // statement: MySQLEvents.STATEMENTS.ALL, // you can choose only insert for example MySQLEvents.STATEMENTS.INSERT, but here we are choosing everything
     statement: MySQLEvents.STATEMENTS.INSERT, // you can choose only insert for example MySQLEvents.STATEMENTS.INSERT, but here we are choosing everything
     onEvent: e => {
@@ -41,7 +42,7 @@ const program = async () => {
       var nric = person.getNricFin();
       var mobno = person.getMobileNumber();
 
-      var sql = mysql.format("SELECT * from ost_hikvision_db.attendance_tbl where mobile_no= ? && auth_date= ? && auth_time < ? ORDER BY auth_time DESC", [mobno, dateFormat, timeForamt]);
+      var sql = mysql.format("SELECT * from hcp_safeentry.events where mobile_no= ? && auth_date= ? && auth_time < ? ORDER BY auth_time DESC", [mobno, dateFormat, timeForamt]);
       connection.query(sql,  function (error, results, fields) {
       if (error) throw error;
     

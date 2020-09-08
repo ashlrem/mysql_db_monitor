@@ -1,5 +1,6 @@
 const cypress = require('cypress');
 const person = require('../person');
+require('dotenv').config();
 var d = new Date();
 
 // console.log("\ncypressRun NRICFIN: " + person.getNricFin());
@@ -8,19 +9,18 @@ var d = new Date();
 var runCheckIn = async function() {
     await cypress.run({
       config: {
-        baseUrl: 'https://www.safeentry-qr.gov.sg/tenant/PROD-200504143Z-685828-ONESYSTEMSTECHNOLOGIESPTELT-SE',
         video: false,
-        pluginsFile: './cypress/plugins/index.js',
+        // pluginsFile: './cypress/plugins/index.js',
         screenshotsFolder: './reports',
         trashAssetsBeforeRuns: false
       },
       env: {
+        baseUrl: process.env.SAFE_ENTRY_URL,
         nricFin: person.getNricFin(),
         mobileNum: person.getMobileNumber(),
       },
         headless: true,
         quiet: true,
-        parallel: true,
         spec: './cypress/integration/safeentry.checkin.spec.js'
       })
       .then((results) => {
@@ -35,19 +35,19 @@ var runCheckIn = async function() {
 var runCheckOut = async function() {
   await cypress.run({
     config: {
-      baseUrl: 'https://www.safeentry-qr.gov.sg/tenant/PROD-200504143Z-685828-ONESYSTEMSTECHNOLOGIESPTELT-SE',
+      // baseUrl: process.env.SAFE_ENTRY_URL,
       video: false,
-      pluginsFile: './cypress/plugins/index.js',
+      // pluginsFile: './cypress/plugins/index.js',
       screenshotsFolder: './reports',
       trashAssetsBeforeRuns: false
     },
     env: {
+      baseUrl: process.env.SAFE_ENTRY_URL,
       nricFin: person.getNricFin(),
       mobileNum: person.getMobileNumber(),
     },
       headless: true,
       quiet: true,
-      parallel: true,
       spec: './cypress/integration/safeentry.checkout.spec.js'
     })
     .then((results) => {

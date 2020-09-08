@@ -8,7 +8,7 @@ var data = '{\n\n    "pageNo": 1,\n    "pageSize": 500\n}';
 
 var config = {
     method: 'post',
-    url: 'https://127.0.0.1/artemis/api/resource/v1/person/personList',
+    url: `https://${process.env.HCP_SERVER_IP}/artemis/api/resource/v1/person/personList`,
     headers: { 
       'Accept': 'application/json', 
       'Content-Type': 'application/json;charset=UTF-8', 
